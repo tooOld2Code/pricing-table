@@ -1,0 +1,9 @@
+@use 'sass:map';
+
+@function get_clr($clr, $shade) {
+  @if map.has-key($colors, $clr, $shade) {
+    @return map.get($colors, $clr, $shade);
+  } @else {
+    @error 'the key combination passed to get_clr(), #{$clr} & #{$shade}, does not exist in the colour\'s map';
+  }
+}

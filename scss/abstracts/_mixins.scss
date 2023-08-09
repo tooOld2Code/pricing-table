@@ -1,0 +1,27 @@
+@use "sass:meta";
+@use "sass:math";
+@use "sass:map";
+@use "breakpoints"as *;
+
+@mixin mq($size) {
+  $breakpoint: map.get($breakpoints, $size);
+  $map-ok: map.has-key($breakpoints, $size);
+  $is_nbr: meta.type-of($size) == 'number';
+  $is_unitless: $is_nbr and math.is-unitless($size);
+  @if $is_nbr and not $is_unitless {
+    $breakpoint: $size;
+  }
+  $is_error: $is_unitless or not ($is_nbr or $map-ok);
+
+  @if $is_error {
+    @if $is_unitless {
+      @error 'You have passed a unitless number to mq(), "#{$size}". A unit is required.';
+    } @else {
+      @error 'The value you passed to mq(), "#{$size}", is not in the map of breakpoint sizes. You must either use a keyword from the map or a specific number (e.g. 40em)'  
+    }
+  } @else {
+    @media screen and (min-width: $breakpoint) {
+      @content;
+    }
+  }
+}
